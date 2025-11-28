@@ -1,0 +1,1656 @@
+================================================================================
+DATA STRUCTURES AND ALGORITHMS GUIDE
+A Simple Explanation for C# and .NET Developers
+================================================================================
+
+================================================================================
+SECTION 1: TIME AND SPACE COMPLEXITY
+================================================================================
+
+What is Big O Notation?
+-----------------------
+Big O notation describes how the runtime or memory usage of an algorithm grows
+as the input size increases. Think of it as answering: "If I double my data,
+how much slower will my code be?"
+
+Common Time Complexities (from fastest to slowest):
+---------------------------------------------------
+
+O(1) - Constant Time
+  • Takes the same time regardless of input size
+  • Example: Accessing an array element by index
+  • Real world: Looking up a word in a dictionary if you know the page number
+  
+O(log n) - Logarithmic Time
+  • Divides the problem in half each step
+  • Example: Binary search in a sorted array
+  • Real world: Finding a name in a phone book by opening to the middle,
+    then middle of the half, etc.
+
+O(n) - Linear Time
+  • Time grows directly with input size
+  • Example: Finding an item in an unsorted list
+  • Real world: Reading every page of a book to find a word
+
+O(n log n) - Linearithmic Time
+  • Common in efficient sorting algorithms
+  • Example: Merge sort, Quick sort (average case)
+  • Real world: Sorting a deck of cards using efficient methods
+
+O(n²) - Quadratic Time
+  • Nested loops over the data
+  • Example: Bubble sort, checking all pairs in a list
+  • Real world: Comparing every person in a room with every other person
+
+O(n³) - Cubic Time
+  • Triple nested loops
+  • Example: Some matrix operations
+  • Real world: Very slow for large datasets
+
+O(2^n) - Exponential Time
+  • Doubles with each additional input
+  • Example: Recursive Fibonacci without memoization
+  • Real world: Checking all subsets of a set
+
+O(n!) - Factorial Time
+  • Extremely slow, grows factorially
+  • Example: Generating all permutations
+  • Real world: Trying all possible orders of items
+
+Space Complexity:
+-----------------
+Space complexity measures how much memory an algorithm uses.
+
+O(1) - Constant Space
+  • Uses fixed amount of memory regardless of input
+  • Example: Swapping two variables
+
+O(n) - Linear Space
+  • Memory usage grows with input size
+  • Example: Creating a copy of an array
+
+O(n²) - Quadratic Space
+  • Example: Creating a 2D array/matrix
+
+
+================================================================================
+SECTION 2: C# AND .NET DATA STRUCTURES
+================================================================================
+
+1. ARRAY (System.Array)
+-----------------------
+What it is:
+  • Fixed-size collection of elements of the same type
+  • Elements stored in contiguous memory locations
+  • Zero-indexed (first element is at index 0)
+
+Simple Explanation:
+  Think of it as numbered boxes in a row. Each box holds one item, and you
+  can instantly jump to any box if you know its number.
+
+Time Complexity:
+  • Access by index: O(1) - instant
+  • Search (unsorted): O(n) - need to check each element
+  • Insert/Delete: O(n) - need to shift elements
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+int[] numbers = new int[5];        // Fixed size of 5
+numbers[0] = 10;                   // O(1) access
+int[] scores = { 95, 87, 92 };     // Initialize with values
+```
+
+When to use:
+  • When you know the size in advance
+  • Need fast access by index
+  • Memory efficiency is important
+
+
+2. LIST<T> (System.Collections.Generic.List<T>)
+------------------------------------------------
+What it is:
+  • Dynamic array that can grow/shrink
+  • Backed by an array internally
+  • Most commonly used collection in C#
+
+Simple Explanation:
+  Like an array, but it automatically expands when full. It's like a parking
+  lot that adds more spaces when needed.
+
+Time Complexity:
+  • Access by index: O(1)
+  • Add to end: O(1) amortized (occasionally O(n) when resizing)
+  • Insert at position: O(n) - need to shift elements
+  • Remove from end: O(1)
+  • Remove from middle: O(n) - need to shift elements
+  • Search: O(n)
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+List<string> names = new List<string>();
+names.Add("Alice");                // O(1) - add to end
+names.Insert(0, "Bob");            // O(n) - insert at beginning
+string first = names[0];           // O(1) - access by index
+names.Remove("Alice");             // O(n) - search and remove
+bool hasAlice = names.Contains("Alice"); // O(n) - linear search
+```
+
+When to use:
+  • Default choice for most collections
+  • Need dynamic size
+  • Frequent access by index
+  • Adding/removing from end
+
+
+3. DICTIONARY<TKey, TValue> (System.Collections.Generic.Dictionary<TKey, TValue>)
+----------------------------------------------------------------------------------
+What it is:
+  • Key-value pairs using hash table
+  • Keys must be unique
+  • Fast lookup by key
+
+Simple Explanation:
+  Like a real dictionary where you look up a word (key) to find its meaning
+  (value). Hash tables make lookups super fast.
+
+Time Complexity:
+  • Add: O(1) average
+  • Remove: O(1) average
+  • Lookup by key: O(1) average
+  • Contains key: O(1) average
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+Dictionary<string, int> ages = new Dictionary<string, int>();
+ages["Alice"] = 25;                // O(1) - add/update
+ages.Add("Bob", 30);               // O(1) - add
+int aliceAge = ages["Alice"];      // O(1) - lookup
+bool hasBob = ages.ContainsKey("Bob"); // O(1) - check existence
+ages.Remove("Alice");              // O(1) - remove
+```
+
+When to use:
+  • Need fast lookups by key
+  • Associating values with unique identifiers
+  • Counting occurrences
+  • Caching data
+
+
+4. HASHSET<T> (System.Collections.Generic.HashSet<T>)
+------------------------------------------------------
+What it is:
+  • Collection of unique elements
+  • No duplicates allowed
+  • Unordered
+
+Simple Explanation:
+  A bag that automatically rejects duplicates. Like a VIP list - each person
+  can only be on it once.
+
+Time Complexity:
+  • Add: O(1) average
+  • Remove: O(1) average
+  • Contains: O(1) average
+  • Union/Intersect/Except: O(n)
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+HashSet<int> uniqueNumbers = new HashSet<int>();
+uniqueNumbers.Add(5);              // O(1) - returns true
+uniqueNumbers.Add(5);              // O(1) - returns false (duplicate)
+bool hasFive = uniqueNumbers.Contains(5); // O(1)
+
+HashSet<int> set1 = new HashSet<int> { 1, 2, 3 };
+HashSet<int> set2 = new HashSet<int> { 2, 3, 4 };
+set1.IntersectWith(set2);          // set1 now has { 2, 3 }
+```
+
+When to use:
+  • Need to ensure uniqueness
+  • Fast membership testing
+  • Set operations (union, intersection)
+  • Removing duplicates from a collection
+
+
+5. QUEUE<T> (System.Collections.Generic.Queue<T>)
+--------------------------------------------------
+What it is:
+  • First-In-First-Out (FIFO) collection
+  • Add to back, remove from front
+
+Simple Explanation:
+  Like a line at a coffee shop. First person in line gets served first.
+
+Time Complexity:
+  • Enqueue (add): O(1)
+  • Dequeue (remove): O(1)
+  • Peek (view front): O(1)
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+Queue<string> line = new Queue<string>();
+line.Enqueue("Alice");             // O(1) - join line
+line.Enqueue("Bob");               // O(1)
+string first = line.Peek();        // O(1) - see who's first (doesn't remove)
+string served = line.Dequeue();    // O(1) - remove and return first
+```
+
+When to use:
+  • Processing items in order they arrive
+  • Breadth-First Search (BFS)
+  • Task scheduling
+  • Print queue management
+
+
+6. STACK<T> (System.Collections.Generic.Stack<T>)
+--------------------------------------------------
+What it is:
+  • Last-In-First-Out (LIFO) collection
+  • Add to top, remove from top
+
+Simple Explanation:
+  Like a stack of plates. You add plates on top and take them from the top.
+  The last plate added is the first one removed.
+
+Time Complexity:
+  • Push (add): O(1)
+  • Pop (remove): O(1)
+  • Peek (view top): O(1)
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+Stack<string> browserHistory = new Stack<string>();
+browserHistory.Push("google.com"); // O(1) - visit page
+browserHistory.Push("github.com"); // O(1)
+string current = browserHistory.Peek();    // O(1) - see current page
+string previous = browserHistory.Pop();    // O(1) - go back
+```
+
+When to use:
+  • Undo functionality
+  • Depth-First Search (DFS)
+  • Expression evaluation
+  • Function call stack simulation
+  • Bracket matching
+
+
+7. LINKEDLIST<T> (System.Collections.Generic.LinkedList<T>)
+------------------------------------------------------------
+What it is:
+  • Doubly-linked list
+  • Each node points to next and previous nodes
+  • No index-based access
+
+Simple Explanation:
+  Like a train where each car is connected to the next and previous car.
+  You can easily add/remove cars anywhere, but to reach a specific car,
+  you must walk through from the beginning or end.
+
+Time Complexity:
+  • Add to beginning/end: O(1)
+  • Add/Remove at known node: O(1)
+  • Access by index: O(n) - must traverse
+  • Search: O(n)
+
+Space Complexity: O(n) - extra space for node pointers
+
+C# Example:
+```csharp
+LinkedList<string> playlist = new LinkedList<string>();
+playlist.AddLast("Song1");         // O(1) - add to end
+playlist.AddFirst("Song0");        // O(1) - add to beginning
+LinkedListNode<string> node = playlist.First;
+playlist.AddAfter(node, "Song0.5"); // O(1) - insert after node
+playlist.Remove(node);             // O(1) - remove specific node
+```
+
+When to use:
+  • Frequent insertions/deletions in middle
+  • Don't need index-based access
+  • Implementing other data structures (queues, stacks)
+  • LRU Cache implementation
+
+
+8. SORTEDSET<T> (System.Collections.Generic.SortedSet<T>)
+----------------------------------------------------------
+What it is:
+  • Sorted collection of unique elements
+  • Implemented as Red-Black tree
+  • Maintains elements in sorted order
+
+Simple Explanation:
+  Like a HashSet but keeps everything sorted automatically. Like a trophy
+  case that always keeps awards in order.
+
+Time Complexity:
+  • Add: O(log n)
+  • Remove: O(log n)
+  • Contains: O(log n)
+  • Min/Max: O(log n)
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+SortedSet<int> scores = new SortedSet<int>();
+scores.Add(85);                    // O(log n)
+scores.Add(92);                    // O(log n)
+scores.Add(78);                    // O(log n)
+// scores is now { 78, 85, 92 } - automatically sorted
+int lowest = scores.Min;           // O(log n)
+int highest = scores.Max;          // O(log n)
+```
+
+When to use:
+  • Need sorted unique elements
+  • Frequent min/max queries
+  • Range queries
+  • Ordered iteration
+
+
+9. SORTEDDICTIONARY<TKey, TValue> (System.Collections.Generic.SortedDictionary<TKey, TValue>)
+----------------------------------------------------------------------------------------------
+What it is:
+  • Key-value pairs sorted by key
+  • Implemented as Binary Search Tree
+  • Keys always in sorted order
+
+Simple Explanation:
+  Like a Dictionary but keys are always kept in order. Like a filing cabinet
+  where folders are always alphabetically arranged.
+
+Time Complexity:
+  • Add: O(log n)
+  • Remove: O(log n)
+  • Lookup: O(log n)
+
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+SortedDictionary<string, int> scores = new SortedDictionary<string, int>();
+scores["Charlie"] = 85;            // O(log n)
+scores["Alice"] = 92;              // O(log n)
+scores["Bob"] = 78;                // O(log n)
+// Iterating will give: Alice, Bob, Charlie (sorted by key)
+```
+
+When to use:
+  • Need key-value pairs in sorted order
+  • Range queries by key
+  • Ordered iteration by key
+  • Less frequent lookups than Dictionary
+
+
+10. SORTEDLIST<TKey, TValue> (System.Collections.Generic.SortedList<TKey, TValue>)
+-----------------------------------------------------------------------------------
+What it is:
+  • Key-value pairs sorted by key
+  • Implemented using arrays (not tree)
+  • More memory efficient than SortedDictionary
+
+Simple Explanation:
+  Similar to SortedDictionary but uses less memory and is faster for lookups
+  but slower for insertions/deletions.
+
+Time Complexity:
+  • Add: O(n) - may need to shift elements
+  • Remove: O(n) - need to shift elements
+  • Lookup by key: O(log n) - binary search
+  • Access by index: O(1)
+
+Space Complexity: O(n) - more efficient than SortedDictionary
+
+C# Example:
+```csharp
+SortedList<string, int> rankings = new SortedList<string, int>();
+rankings["Alice"] = 1;
+rankings["Bob"] = 2;
+int rank = rankings["Alice"];      // O(log n)
+KeyValuePair<string, int> first = rankings.ElementAt(0); // O(1)
+```
+
+When to use:
+  • Fewer insertions/deletions
+  • Memory efficiency important
+  • Need index-based access to sorted data
+
+
+================================================================================
+SECTION 3: COMMON LEETCODE ALGORITHMS
+================================================================================
+
+1. SORTING ALGORITHMS
+---------------------
+
+A. Bubble Sort
+--------------
+Simple Explanation:
+  Compare adjacent elements and swap if they're in wrong order. Repeat until
+  sorted. Like bubbles rising to the surface.
+
+Time Complexity: O(n²) worst/average, O(n) best
+Space Complexity: O(1)
+
+C# Example:
+```csharp
+void BubbleSort(int[] arr) {
+    for (int i = 0; i < arr.Length - 1; i++) {
+        for (int j = 0; j < arr.Length - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+```
+
+When to use:
+  • Educational purposes
+  • Small datasets
+  • Nearly sorted data
+
+
+B. Selection Sort
+-----------------
+Simple Explanation:
+  Find the minimum element and place it at the beginning. Repeat for remaining
+  elements.
+
+Time Complexity: O(n²)
+Space Complexity: O(1)
+
+C# Example:
+```csharp
+void SelectionSort(int[] arr) {
+    for (int i = 0; i < arr.Length - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < arr.Length; j++) {
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+            }
+        }
+        // Swap
+        int temp = arr[minIdx];
+        arr[minIdx] = arr[i];
+        arr[i] = temp;
+    }
+}
+```
+
+
+C. Insertion Sort
+-----------------
+Simple Explanation:
+  Build sorted array one element at a time by inserting each element into its
+  correct position. Like sorting playing cards in your hand.
+
+Time Complexity: O(n²) worst, O(n) best
+Space Complexity: O(1)
+
+C# Example:
+```csharp
+void InsertionSort(int[] arr) {
+    for (int i = 1; i < arr.Length; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+```
+
+
+D. Merge Sort
+-------------
+Simple Explanation:
+  Divide array in half recursively, sort each half, then merge them back
+  together. Divide and conquer approach.
+
+Time Complexity: O(n log n) - all cases
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+void MergeSort(int[] arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        MergeSort(arr, left, mid);
+        MergeSort(arr, mid + 1, right);
+        Merge(arr, left, mid, right);
+    }
+}
+
+void Merge(int[] arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    int[] L = new int[n1];
+    int[] R = new int[n2];
+    
+    Array.Copy(arr, left, L, 0, n1);
+    Array.Copy(arr, mid + 1, R, 0, n2);
+    
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k++] = L[i++];
+        } else {
+            arr[k++] = R[j++];
+        }
+    }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+```
+
+When to use:
+  • Need guaranteed O(n log n)
+  • Stable sort required
+  • External sorting (large datasets)
+
+
+E. Quick Sort
+-------------
+Simple Explanation:
+  Pick a pivot element, partition array so smaller elements are left, larger
+  are right. Recursively sort partitions.
+
+Time Complexity: O(n log n) average, O(n²) worst
+Space Complexity: O(log n)
+
+C# Example:
+```csharp
+void QuickSort(int[] arr, int low, int high) {
+    if (low < high) {
+        int pi = Partition(arr, low, high);
+        QuickSort(arr, low, pi - 1);
+        QuickSort(arr, pi + 1, high);
+    }
+}
+
+int Partition(int[] arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    int temp2 = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp2;
+    return i + 1;
+}
+```
+
+When to use:
+  • General purpose sorting
+  • Average case performance important
+  • In-place sorting needed
+
+
+F. Heap Sort
+------------
+Simple Explanation:
+  Build a max heap, then repeatedly extract maximum element.
+
+Time Complexity: O(n log n)
+Space Complexity: O(1)
+
+When to use:
+  • Guaranteed O(n log n)
+  • In-place sorting
+  • Memory constrained
+
+
+2. SEARCHING ALGORITHMS
+-----------------------
+
+A. Linear Search
+----------------
+Simple Explanation:
+  Check each element one by one until found.
+
+Time Complexity: O(n)
+Space Complexity: O(1)
+
+C# Example:
+```csharp
+int LinearSearch(int[] arr, int target) {
+    for (int i = 0; i < arr.Length; i++) {
+        if (arr[i] == target) {
+            return i;
+        }
+    }
+    return -1; // Not found
+}
+```
+
+
+B. Binary Search
+----------------
+Simple Explanation:
+  In a sorted array, check middle element. If target is smaller, search left
+  half; if larger, search right half. Repeat.
+
+Time Complexity: O(log n)
+Space Complexity: O(1) iterative, O(log n) recursive
+
+C# Example (Iterative):
+```csharp
+int BinarySearch(int[] arr, int target) {
+    int left = 0, right = arr.Length - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if (arr[mid] == target) {
+            return mid;
+        }
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return -1; // Not found
+}
+```
+
+C# Example (Recursive):
+```csharp
+int BinarySearchRecursive(int[] arr, int target, int left, int right) {
+    if (left > right) return -1;
+    
+    int mid = left + (right - left) / 2;
+    
+    if (arr[mid] == target) return mid;
+    if (arr[mid] < target) {
+        return BinarySearchRecursive(arr, target, mid + 1, right);
+    }
+    return BinarySearchRecursive(arr, target, left, mid - 1);
+}
+```
+
+
+3. TWO POINTERS TECHNIQUE
+-------------------------
+Simple Explanation:
+  Use two pointers to traverse array from different positions. Common patterns:
+  - Both start at beginning (fast/slow)
+  - One at start, one at end (opposite ends)
+  - Both in same direction (sliding window)
+
+Time Complexity: Usually O(n)
+Space Complexity: O(1)
+
+Common LeetCode Problems:
+  • Two Sum II (sorted array)
+  • Remove Duplicates from Sorted Array
+  • Container With Most Water
+  • 3Sum
+
+C# Example - Two Sum (Sorted Array):
+```csharp
+int[] TwoSum(int[] numbers, int target) {
+    int left = 0, right = numbers.Length - 1;
+    
+    while (left < right) {
+        int sum = numbers[left] + numbers[right];
+        if (sum == target) {
+            return new int[] { left + 1, right + 1 };
+        } else if (sum < target) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+    return new int[] { -1, -1 };
+}
+```
+
+C# Example - Remove Duplicates:
+```csharp
+int RemoveDuplicates(int[] nums) {
+    if (nums.Length == 0) return 0;
+    
+    int slow = 0;
+    for (int fast = 1; fast < nums.Length; fast++) {
+        if (nums[fast] != nums[slow]) {
+            slow++;
+            nums[slow] = nums[fast];
+        }
+    }
+    return slow + 1;
+}
+```
+
+
+4. SLIDING WINDOW TECHNIQUE
+---------------------------
+Simple Explanation:
+  Maintain a "window" that slides through array/string. Useful for subarray/
+  substring problems.
+
+Types:
+  • Fixed size window
+  • Variable size window
+
+Time Complexity: Usually O(n)
+Space Complexity: O(1) or O(k) for hash map
+
+Common LeetCode Problems:
+  • Maximum Sum Subarray of Size K
+  • Longest Substring Without Repeating Characters
+  • Minimum Window Substring
+  • Longest Repeating Character Replacement
+
+C# Example - Max Sum Subarray (Fixed Window):
+```csharp
+int MaxSumSubarray(int[] arr, int k) {
+    int maxSum = 0, windowSum = 0;
+    
+    // First window
+    for (int i = 0; i < k; i++) {
+        windowSum += arr[i];
+    }
+    maxSum = windowSum;
+    
+    // Slide window
+    for (int i = k; i < arr.Length; i++) {
+        windowSum += arr[i] - arr[i - k]; // Add new, remove old
+        maxSum = Math.Max(maxSum, windowSum);
+    }
+    return maxSum;
+}
+```
+
+C# Example - Longest Substring Without Repeating (Variable Window):
+```csharp
+int LengthOfLongestSubstring(string s) {
+    Dictionary<char, int> seen = new Dictionary<char, int>();
+    int left = 0, maxLength = 0;
+    
+    for (int right = 0; right < s.Length; right++) {
+        if (seen.ContainsKey(s[right])) {
+            left = Math.Max(left, seen[s[right]] + 1);
+        }
+        seen[s[right]] = right;
+        maxLength = Math.Max(maxLength, right - left + 1);
+    }
+    return maxLength;
+}
+```
+
+
+5. DEPTH-FIRST SEARCH (DFS)
+---------------------------
+Simple Explanation:
+  Explore as far as possible down each branch before backtracking. Like
+  exploring a maze by always taking the first unexplored path.
+
+Implementation: Stack (or recursion)
+
+Time Complexity: O(V + E) for graphs, O(n) for trees
+Space Complexity: O(h) where h is height (recursion stack)
+
+Common LeetCode Problems:
+  • Binary Tree Inorder/Preorder/Postorder Traversal
+  • Path Sum
+  • Number of Islands
+  • Clone Graph
+
+C# Example - Tree DFS (Preorder):
+```csharp
+public class TreeNode {
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
+    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+void DFSPreorder(TreeNode root) {
+    if (root == null) return;
+    
+    Console.WriteLine(root.val);  // Process node
+    DFSPreorder(root.left);       // Left subtree
+    DFSPreorder(root.right);      // Right subtree
+}
+```
+
+C# Example - Graph DFS:
+```csharp
+void DFSGraph(Dictionary<int, List<int>> graph, int start) {
+    HashSet<int> visited = new HashSet<int>();
+    DFSHelper(graph, start, visited);
+}
+
+void DFSHelper(Dictionary<int, List<int>> graph, int node, HashSet<int> visited) {
+    if (visited.Contains(node)) return;
+    
+    visited.Add(node);
+    Console.WriteLine(node);
+    
+    foreach (int neighbor in graph[node]) {
+        DFSHelper(graph, neighbor, visited);
+    }
+}
+```
+
+C# Example - DFS with Stack (Iterative):
+```csharp
+void DFSIterative(TreeNode root) {
+    if (root == null) return;
+    
+    Stack<TreeNode> stack = new Stack<TreeNode>();
+    stack.Push(root);
+    
+    while (stack.Count > 0) {
+        TreeNode node = stack.Pop();
+        Console.WriteLine(node.val);
+        
+        if (node.right != null) stack.Push(node.right);
+        if (node.left != null) stack.Push(node.left);
+    }
+}
+```
+
+
+6. BREADTH-FIRST SEARCH (BFS)
+-----------------------------
+Simple Explanation:
+  Explore all neighbors at current depth before moving to next depth. Like
+  ripples in water spreading outward.
+
+Implementation: Queue
+
+Time Complexity: O(V + E) for graphs, O(n) for trees
+Space Complexity: O(w) where w is maximum width
+
+Common LeetCode Problems:
+  • Binary Tree Level Order Traversal
+  • Minimum Depth of Binary Tree
+  • Word Ladder
+  • Shortest Path in Binary Matrix
+
+C# Example - Tree BFS:
+```csharp
+void BFS(TreeNode root) {
+    if (root == null) return;
+    
+    Queue<TreeNode> queue = new Queue<TreeNode>();
+    queue.Enqueue(root);
+    
+    while (queue.Count > 0) {
+        TreeNode node = queue.Dequeue();
+        Console.WriteLine(node.val);
+        
+        if (node.left != null) queue.Enqueue(node.left);
+        if (node.right != null) queue.Enqueue(node.right);
+    }
+}
+```
+
+C# Example - Level Order Traversal:
+```csharp
+IList<IList<int>> LevelOrder(TreeNode root) {
+    List<IList<int>> result = new List<IList<int>>();
+    if (root == null) return result;
+    
+    Queue<TreeNode> queue = new Queue<TreeNode>();
+    queue.Enqueue(root);
+    
+    while (queue.Count > 0) {
+        int levelSize = queue.Count;
+        List<int> currentLevel = new List<int>();
+        
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.Dequeue();
+            currentLevel.Add(node.val);
+            
+            if (node.left != null) queue.Enqueue(node.left);
+            if (node.right != null) queue.Enqueue(node.right);
+        }
+        result.Add(currentLevel);
+    }
+    return result;
+}
+```
+
+C# Example - Graph BFS:
+```csharp
+void BFSGraph(Dictionary<int, List<int>> graph, int start) {
+    HashSet<int> visited = new HashSet<int>();
+    Queue<int> queue = new Queue<int>();
+    
+    queue.Enqueue(start);
+    visited.Add(start);
+    
+    while (queue.Count > 0) {
+        int node = queue.Dequeue();
+        Console.WriteLine(node);
+        
+        foreach (int neighbor in graph[node]) {
+            if (!visited.Contains(neighbor)) {
+                visited.Add(neighbor);
+                queue.Enqueue(neighbor);
+            }
+        }
+    }
+}
+```
+
+
+7. DYNAMIC PROGRAMMING (DP)
+---------------------------
+Simple Explanation:
+  Break problem into smaller subproblems, solve each once, and store results
+  to avoid recalculation. "Remember the past to solve the future."
+
+Key Concepts:
+  • Overlapping subproblems
+  • Optimal substructure
+  • Memoization (top-down)
+  • Tabulation (bottom-up)
+
+Time Complexity: Varies, often O(n) to O(n²)
+Space Complexity: O(n) or O(n²) for memoization table
+
+Common LeetCode Problems:
+  • Fibonacci Number
+  • Climbing Stairs
+  • Coin Change
+  • Longest Common Subsequence
+  • House Robber
+  • 0/1 Knapsack
+
+C# Example - Fibonacci (Memoization - Top Down):
+```csharp
+int Fibonacci(int n, Dictionary<int, int> memo = null) {
+    if (memo == null) memo = new Dictionary<int, int>();
+    if (n <= 1) return n;
+    if (memo.ContainsKey(n)) return memo[n];
+    
+    memo[n] = Fibonacci(n - 1, memo) + Fibonacci(n - 2, memo);
+    return memo[n];
+}
+```
+
+C# Example - Fibonacci (Tabulation - Bottom Up):
+```csharp
+int FibonacciDP(int n) {
+    if (n <= 1) return n;
+    
+    int[] dp = new int[n + 1];
+    dp[0] = 0;
+    dp[1] = 1;
+    
+    for (int i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+}
+```
+
+C# Example - Climbing Stairs:
+```csharp
+int ClimbStairs(int n) {
+    if (n <= 2) return n;
+    
+    int[] dp = new int[n + 1];
+    dp[1] = 1;
+    dp[2] = 2;
+    
+    for (int i = 3; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+}
+```
+
+C# Example - Coin Change:
+```csharp
+int CoinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1];
+    Array.Fill(dp, amount + 1);
+    dp[0] = 0;
+    
+    for (int i = 1; i <= amount; i++) {
+        foreach (int coin in coins) {
+            if (i >= coin) {
+                dp[i] = Math.Min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+    return dp[amount] > amount ? -1 : dp[amount];
+}
+```
+
+C# Example - Longest Common Subsequence:
+```csharp
+int LongestCommonSubsequence(string text1, string text2) {
+    int m = text1.Length, n = text2.Length;
+    int[,] dp = new int[m + 1, n + 1];
+    
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (text1[i - 1] == text2[j - 1]) {
+                dp[i, j] = dp[i - 1, j - 1] + 1;
+            } else {
+                dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+            }
+        }
+    }
+    return dp[m, n];
+}
+```
+
+
+8. BACKTRACKING
+---------------
+Simple Explanation:
+  Try all possibilities by building solution incrementally. If a path doesn't
+  work, backtrack and try another. Like solving a maze by trying paths and
+  turning back when hitting dead ends.
+
+Time Complexity: Often exponential O(2^n) or O(n!)
+Space Complexity: O(n) for recursion stack
+
+Common LeetCode Problems:
+  • Permutations
+  • Combinations
+  • Subsets
+  • N-Queens
+  • Sudoku Solver
+  • Word Search
+
+C# Example - Permutations:
+```csharp
+IList<IList<int>> Permute(int[] nums) {
+    List<IList<int>> result = new List<IList<int>>();
+    Backtrack(result, new List<int>(), nums);
+    return result;
+}
+
+void Backtrack(List<IList<int>> result, List<int> current, int[] nums) {
+    if (current.Count == nums.Length) {
+        result.Add(new List<int>(current));
+        return;
+    }
+    
+    foreach (int num in nums) {
+        if (current.Contains(num)) continue;
+        
+        current.Add(num);              // Choose
+        Backtrack(result, current, nums); // Explore
+        current.RemoveAt(current.Count - 1); // Unchoose (backtrack)
+    }
+}
+```
+
+C# Example - Subsets:
+```csharp
+IList<IList<int>> Subsets(int[] nums) {
+    List<IList<int>> result = new List<IList<int>>();
+    BacktrackSubsets(result, new List<int>(), nums, 0);
+    return result;
+}
+
+void BacktrackSubsets(List<IList<int>> result, List<int> current, int[] nums, int start) {
+    result.Add(new List<int>(current));
+    
+    for (int i = start; i < nums.Length; i++) {
+        current.Add(nums[i]);
+        BacktrackSubsets(result, current, nums, i + 1);
+        current.RemoveAt(current.Count - 1);
+    }
+}
+```
+
+C# Example - Combinations:
+```csharp
+IList<IList<int>> Combine(int n, int k) {
+    List<IList<int>> result = new List<IList<int>>();
+    BacktrackCombine(result, new List<int>(), n, k, 1);
+    return result;
+}
+
+void BacktrackCombine(List<IList<int>> result, List<int> current, int n, int k, int start) {
+    if (current.Count == k) {
+        result.Add(new List<int>(current));
+        return;
+    }
+    
+    for (int i = start; i <= n; i++) {
+        current.Add(i);
+        BacktrackCombine(result, current, n, k, i + 1);
+        current.RemoveAt(current.Count - 1);
+    }
+}
+```
+
+
+9. GREEDY ALGORITHMS
+--------------------
+Simple Explanation:
+  Make locally optimal choice at each step, hoping to find global optimum.
+  "Take the best option right now."
+
+Time Complexity: Usually O(n log n) due to sorting
+Space Complexity: O(1) typically
+
+Common LeetCode Problems:
+  • Jump Game
+  • Best Time to Buy and Sell Stock
+  • Meeting Rooms II
+  • Task Scheduler
+  • Gas Station
+
+C# Example - Jump Game:
+```csharp
+bool CanJump(int[] nums) {
+    int maxReach = 0;
+    
+    for (int i = 0; i < nums.Length; i++) {
+        if (i > maxReach) return false;
+        maxReach = Math.Max(maxReach, i + nums[i]);
+        if (maxReach >= nums.Length - 1) return true;
+    }
+    return true;
+}
+```
+
+C# Example - Best Time to Buy and Sell Stock:
+```csharp
+int MaxProfit(int[] prices) {
+    int minPrice = int.MaxValue;
+    int maxProfit = 0;
+    
+    foreach (int price in prices) {
+        if (price < minPrice) {
+            minPrice = price;
+        } else {
+            maxProfit = Math.Max(maxProfit, price - minPrice);
+        }
+    }
+    return maxProfit;
+}
+```
+
+
+10. BINARY SEARCH VARIATIONS
+----------------------------
+Simple Explanation:
+  Binary search pattern applied to different problems beyond simple search.
+
+Common Patterns:
+  • Finding boundaries (first/last occurrence)
+  • Search in rotated sorted array
+  • Finding peak element
+  • Minimum in rotated sorted array
+
+C# Example - Find First and Last Position:
+```csharp
+int[] SearchRange(int[] nums, int target) {
+    int first = FindBound(nums, target, true);
+    if (first == -1) return new int[] { -1, -1 };
+    int last = FindBound(nums, target, false);
+    return new int[] { first, last };
+}
+
+int FindBound(int[] nums, int target, bool findFirst) {
+    int left = 0, right = nums.Length - 1;
+    int result = -1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if (nums[mid] == target) {
+            result = mid;
+            if (findFirst) {
+                right = mid - 1; // Continue searching left
+            } else {
+                left = mid + 1;  // Continue searching right
+            }
+        } else if (nums[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return result;
+}
+```
+
+
+11. GRAPH ALGORITHMS
+--------------------
+
+A. Dijkstra's Algorithm (Shortest Path)
+---------------------------------------
+Simple Explanation:
+  Find shortest path from source to all vertices in weighted graph.
+  Uses priority queue to always explore nearest unvisited vertex.
+
+Time Complexity: O((V + E) log V) with priority queue
+Space Complexity: O(V)
+
+C# Example:
+```csharp
+Dictionary<int, int> Dijkstra(Dictionary<int, List<(int, int)>> graph, int start) {
+    Dictionary<int, int> distances = new Dictionary<int, int>();
+    PriorityQueue<int, int> pq = new PriorityQueue<int, int>();
+    
+    foreach (var node in graph.Keys) {
+        distances[node] = int.MaxValue;
+    }
+    distances[start] = 0;
+    pq.Enqueue(start, 0);
+    
+    while (pq.Count > 0) {
+        int current = pq.Dequeue();
+        
+        foreach (var (neighbor, weight) in graph[current]) {
+            int newDist = distances[current] + weight;
+            if (newDist < distances[neighbor]) {
+                distances[neighbor] = newDist;
+                pq.Enqueue(neighbor, newDist);
+            }
+        }
+    }
+    return distances;
+}
+```
+
+
+B. Union-Find (Disjoint Set)
+----------------------------
+Simple Explanation:
+  Track connected components in a graph. Used for cycle detection and
+  connecting elements.
+
+Time Complexity: O(α(n)) ≈ O(1) with path compression
+Space Complexity: O(n)
+
+C# Example:
+```csharp
+class UnionFind {
+    private int[] parent;
+    private int[] rank;
+    
+    public UnionFind(int n) {
+        parent = new int[n];
+        rank = new int[n];
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+    }
+    
+    public int Find(int x) {
+        if (parent[x] != x) {
+            parent[x] = Find(parent[x]); // Path compression
+        }
+        return parent[x];
+    }
+    
+    public bool Union(int x, int y) {
+        int rootX = Find(x);
+        int rootY = Find(y);
+        
+        if (rootX == rootY) return false; // Already connected
+        
+        // Union by rank
+        if (rank[rootX] < rank[rootY]) {
+            parent[rootX] = rootY;
+        } else if (rank[rootX] > rank[rootY]) {
+            parent[rootY] = rootX;
+        } else {
+            parent[rootY] = rootX;
+            rank[rootX]++;
+        }
+        return true;
+    }
+}
+```
+
+
+12. HEAP / PRIORITY QUEUE ALGORITHMS
+------------------------------------
+Simple Explanation:
+  Use heap to efficiently get min/max element. Common in scheduling and
+  finding kth largest/smallest.
+
+Common LeetCode Problems:
+  • Kth Largest Element
+  • Top K Frequent Elements
+  • Merge K Sorted Lists
+  • Find Median from Data Stream
+
+C# Example - Kth Largest Element:
+```csharp
+int FindKthLargest(int[] nums, int k) {
+    PriorityQueue<int, int> minHeap = new PriorityQueue<int, int>();
+    
+    foreach (int num in nums) {
+        minHeap.Enqueue(num, num);
+        if (minHeap.Count > k) {
+            minHeap.Dequeue();
+        }
+    }
+    return minHeap.Peek();
+}
+```
+
+
+13. TRIE (PREFIX TREE)
+----------------------
+Simple Explanation:
+  Tree structure for storing strings efficiently. Each node represents a
+  character. Great for autocomplete and prefix matching.
+
+Time Complexity: O(m) where m is string length
+Space Complexity: O(ALPHABET_SIZE * N * M)
+
+C# Example:
+```csharp
+class TrieNode {
+    public Dictionary<char, TrieNode> Children = new Dictionary<char, TrieNode>();
+    public bool IsEndOfWord = false;
+}
+
+class Trie {
+    private TrieNode root;
+    
+    public Trie() {
+        root = new TrieNode();
+    }
+    
+    public void Insert(string word) {
+        TrieNode node = root;
+        foreach (char c in word) {
+            if (!node.Children.ContainsKey(c)) {
+                node.Children[c] = new TrieNode();
+            }
+            node = node.Children[c];
+        }
+        node.IsEndOfWord = true;
+    }
+    
+    public bool Search(string word) {
+        TrieNode node = FindNode(word);
+        return node != null && node.IsEndOfWord;
+    }
+    
+    public bool StartsWith(string prefix) {
+        return FindNode(prefix) != null;
+    }
+    
+    private TrieNode FindNode(string str) {
+        TrieNode node = root;
+        foreach (char c in str) {
+            if (!node.Children.ContainsKey(c)) {
+                return null;
+            }
+            node = node.Children[c];
+        }
+        return node;
+    }
+}
+```
+
+
+14. BIT MANIPULATION
+--------------------
+Simple Explanation:
+  Operate directly on binary bits. Very fast and memory efficient.
+
+Common Operations:
+  • AND (&): Both bits must be 1
+  • OR (|): At least one bit is 1
+  • XOR (^): Bits are different
+  • NOT (~): Flip bits
+  • Left shift (<<): Multiply by 2
+  • Right shift (>>): Divide by 2
+
+Common LeetCode Problems:
+  • Single Number
+  • Number of 1 Bits
+  • Counting Bits
+  • Power of Two
+  • Reverse Bits
+
+C# Example - Single Number (XOR trick):
+```csharp
+int SingleNumber(int[] nums) {
+    int result = 0;
+    foreach (int num in nums) {
+        result ^= num; // XOR: duplicate numbers cancel out
+    }
+    return result;
+}
+```
+
+C# Example - Count 1 Bits:
+```csharp
+int HammingWeight(uint n) {
+    int count = 0;
+    while (n != 0) {
+        count += (int)(n & 1);
+        n >>= 1;
+    }
+    return count;
+}
+```
+
+C# Example - Power of Two:
+```csharp
+bool IsPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}
+```
+
+
+15. MATRIX TRAVERSAL
+--------------------
+Simple Explanation:
+  Various ways to traverse 2D arrays.
+
+Common Patterns:
+  • Row by row
+  • Column by column
+  • Diagonal
+  • Spiral
+  • BFS/DFS on matrix
+
+C# Example - Spiral Order:
+```csharp
+IList<int> SpiralOrder(int[][] matrix) {
+    List<int> result = new List<int>();
+    if (matrix.Length == 0) return result;
+    
+    int top = 0, bottom = matrix.Length - 1;
+    int left = 0, right = matrix[0].Length - 1;
+    
+    while (top <= bottom && left <= right) {
+        // Right
+        for (int i = left; i <= right; i++) {
+            result.Add(matrix[top][i]);
+        }
+        top++;
+        
+        // Down
+        for (int i = top; i <= bottom; i++) {
+            result.Add(matrix[i][right]);
+        }
+        right--;
+        
+        // Left
+        if (top <= bottom) {
+            for (int i = right; i >= left; i--) {
+                result.Add(matrix[bottom][i]);
+            }
+            bottom--;
+        }
+        
+        // Up
+        if (left <= right) {
+            for (int i = bottom; i >= top; i--) {
+                result.Add(matrix[i][left]);
+            }
+            left++;
+        }
+    }
+    return result;
+}
+```
+
+
+================================================================================
+SECTION 4: LEETCODE PROBLEM-SOLVING STRATEGIES
+================================================================================
+
+1. IDENTIFYING THE RIGHT APPROACH
+----------------------------------
+
+Ask yourself these questions:
+
+A. What type of data structure would help?
+   • Need fast lookup? → Dictionary/HashSet
+   • Need ordering? → SortedSet/SortedDictionary
+   • Need FIFO? → Queue
+   • Need LIFO? → Stack
+   • Working with tree/graph? → DFS/BFS
+
+B. What pattern does it match?
+   • Finding pairs/triplets? → Two Pointers
+   • Subarray/substring? → Sliding Window
+   • Optimal solution from subproblems? → Dynamic Programming
+   • All combinations? → Backtracking
+   • Shortest path? → BFS/Dijkstra
+   • Connected components? → Union-Find/DFS
+
+C. Time constraint hints:
+   • O(1) → Use hash map or math formula
+   • O(log n) → Binary search
+   • O(n) → Two pointers, sliding window, single pass
+   • O(n log n) → Sorting, heap
+   • O(n²) → Nested loops (try to optimize)
+
+
+2. STEP-BY-STEP PROBLEM SOLVING
+--------------------------------
+
+1. Understand the problem
+   • Read carefully, identify inputs/outputs
+   • Look for constraints (size, range, sorted?)
+   • Create examples (including edge cases)
+
+2. Think about approach
+   • Start with brute force
+   • Identify inefficiencies
+   • Choose appropriate data structure/algorithm
+
+3. Write pseudocode
+   • Plan before coding
+   • Break into smaller functions
+
+4. Implement solution
+   • Write clean, readable code
+   • Use meaningful variable names
+
+5. Test thoroughly
+   • Test with examples
+   • Test edge cases (empty, single element, etc.)
+   • Test large inputs mentally
+
+6. Analyze complexity
+   • Calculate time and space complexity
+   • See if you can optimize
+
+
+3. COMMON EDGE CASES TO CONSIDER
+---------------------------------
+
+• Empty input (null, empty array/string)
+• Single element
+• All elements same
+• Duplicates (if not specified)
+• Negative numbers
+• Very large or very small numbers
+• Maximum constraints (n = 10^5, etc.)
+• Already sorted input
+• Reverse sorted input
+
+
+4. C# SPECIFIC TIPS FOR LEETCODE
+---------------------------------
+
+• Use `List<T>` instead of arrays when size unknown
+• `Dictionary<TKey, TValue>` for O(1) lookups
+• `HashSet<T>` for unique elements
+• `PriorityQueue<TElement, TPriority>` (.NET 6+) for heaps
+• LINQ can simplify code but watch performance:
+  - `arr.Sum()` instead of manual loop
+  - `arr.Max()`, `arr.Min()`
+  - `arr.OrderBy()` for sorting
+  
+• StringBuilder for string concatenation in loops
+• Use `Math.Max()`, `Math.Min()`, `Math.Abs()`
+• Array initialization: `new int[n]` (default 0)
+• Fill array: `Array.Fill(arr, value)`
+• Sort array: `Array.Sort(arr)`
+• Reverse array: `Array.Reverse(arr)`
+
+
+================================================================================
+QUICK REFERENCE: WHEN TO USE WHAT
+================================================================================
+
+PROBLEM TYPE                          → APPROACH
+--------------------------------------------------------------------------------
+Find pair with sum                    → Two Pointers (if sorted) / Hash Map
+Find subarray with condition          → Sliding Window
+Find shortest path                    → BFS / Dijkstra
+Tree traversal                        → DFS (recursion) / BFS (queue)
+Find all combinations                 → Backtracking
+Optimize with overlapping subproblems → Dynamic Programming
+Detect cycle in linked list           → Fast/Slow pointers
+Merge intervals                       → Sort + Linear scan
+Top K elements                        → Heap / Priority Queue
+Prefix matching                       → Trie
+Group anagrams                        → Hash Map with sorted string as key
+LRU Cache                             → Dictionary + LinkedList
+Range sum queries                     → Prefix Sum
+Connected components                  → Union-Find / DFS
+Check balanced parentheses            → Stack
+
+================================================================================
+END OF GUIDE
+================================================================================

@@ -1,0 +1,6 @@
+/venv
+/chroma_db
+/chroma_db_hybrid
+/assistant_data
+prompt.txt
+.ds_store
